@@ -1,4 +1,5 @@
 import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 import sys
 import numpy as np
 from tensorflow.keras.models import load_model # type: ignore
@@ -6,8 +7,12 @@ from tensorflow.keras.preprocessing import image # type: ignore
 import tensorflow as tf
 import contextlib
 
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
 # Suppress TensorFlow INFO and WARNING logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
+tf.get_logger().setLevel('ERROR')
 
 # Assuming the model file is in the same directory as this script
 model_path = os.path.join(os.path.dirname(__file__), 'bcd_model.h5')

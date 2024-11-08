@@ -7,6 +7,8 @@ from tensorflow.keras.preprocessing import image # type: ignore
 import tensorflow as tf
 import contextlib
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 # Suppress TensorFlow INFO and WARNING logs

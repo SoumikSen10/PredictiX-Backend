@@ -183,7 +183,7 @@ const lungpred = asyncHandler(async (req, res) => {
   try {
     if (!req.file) {
       console.error("Multer did not process the file");
-      throw new ApiError(400, "No image file uploaded");
+      throw new Error("No image file uploaded");
     }
 
     const filePath = path.resolve(
@@ -196,7 +196,7 @@ const lungpred = asyncHandler(async (req, res) => {
     console.log("Resolved file path:", filePath);
 
     if (!fs.existsSync(filePath)) {
-      throw new ApiError(404, "Uploaded file not found");
+      throw new Error("Uploaded file not found");
     }
 
     const pythonProcess = spawn("python", [
@@ -212,9 +212,8 @@ const lungpred = asyncHandler(async (req, res) => {
     });
 
     pythonProcess.stderr.on("data", (data) => {
-      console.error(`Error from Python script: ${data}`);
+      console.error(`Error from Python script: ${data.toString()}`);
       errorOccurred = true;
-      res.status(500).json({ error: "Prediction error" });
     });
 
     pythonProcess.on("close", (code) => {
@@ -231,8 +230,8 @@ const lungpred = asyncHandler(async (req, res) => {
         } else {
           res.status(500).json({ error: "Unexpected prediction result" });
         }
-      } else if (!errorOccurred) {
-        res.status(500).json({ error: "Prediction error" });
+      } else {
+        res.status(500).json({ error: "Prediction process failed" });
       }
 
       // Always delete the file after the prediction process

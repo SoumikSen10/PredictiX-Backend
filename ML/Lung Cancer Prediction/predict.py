@@ -4,9 +4,12 @@ import numpy as np
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing import image
 import contextlib
+import tensorflow as tf
 
 # Suppress TensorFlow INFO and WARNING logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+tf.get_logger().setLevel('ERROR')
 
 # Assuming the model file is in the same directory as this script
 model_path = os.path.join(os.path.dirname(__file__), 'LCD.h5')
@@ -15,7 +18,7 @@ if not os.path.exists(model_path):
     sys.exit(1)
 
 try:
-    model = load_model(model_path)
+    model = load_model(model_path, compile=False)  # Prevent issues with older models
 except Exception as e:
     print(f"Error loading model: {e}")
     sys.exit(1)
@@ -37,19 +40,14 @@ def load_and_preprocess_image(img_path, target_size):
 def predict_image_class(model, img_path, target_size):
     try:
         img = load_and_preprocess_image(img_path, target_size)
-        
-        # Suppress the progress bar and other logs from Keras
         with open(os.devnull, 'w') as f, contextlib.redirect_stdout(f), contextlib.redirect_stderr(f):
             predictions = model.predict(img)
-        
         predicted_class = np.argmax(predictions[0])
         predicted_label = class_labels[predicted_class]
-        
-        if (predicted_label == 'normal'):
+        if predicted_label == 'normal':
             return 'non-cancerous'
         else:
             return 'cancerous'
-        
     except Exception as e:
         print(f"Error in predicting image class: {e}")
         sys.exit(1)

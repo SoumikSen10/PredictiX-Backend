@@ -9,6 +9,8 @@ import contextlib
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
+tf.config.set_visible_devices([], 'GPU')  # Explicitly tell TensorFlow not to use GPU
+
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 # Suppress TensorFlow INFO and WARNING logs

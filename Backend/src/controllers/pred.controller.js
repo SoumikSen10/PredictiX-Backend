@@ -290,7 +290,7 @@ const breastpred = asyncHandler(async (req, res) => {
   pythonProcess.on("close", (code) => {
     if (code === 0 && !errorOccurred) {
       res.status(200).json({ prediction: predictionData.trim() });
-    } else if (!errorOccurred) {
+    } else {
       res.status(500).json({ error: "Prediction error" });
     }
 

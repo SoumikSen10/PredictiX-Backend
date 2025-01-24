@@ -27,7 +27,7 @@ app.use(
 );
 
 app.use(
-  cors({ origin: "https://predicti-x-v2.vercel.app", credentials: true })
+  cors({ origin: ["https://predicti-x-v2.vercel.app", "http://localhost:5173"], credentials: true })
 );
 
 // Configurations for different types of data acceptance
